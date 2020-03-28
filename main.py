@@ -1,9 +1,10 @@
-from model import a
+from model import Zone
 from flask import Flask, render_template, url_for, jsonify, request, redirect
 from math import cos, asin, sqrt
 import json
 
 dist = 0
+a = Zone()
 
 def distance(lat1, lon1, lat2, lon2):
 	lat1, lat2 = float(lat1), float(lat2)
@@ -21,40 +22,32 @@ def closest(data, v):
 
 app = Flask(__name__)
 
+loc = 0
 
-@app.route('/home')
+@app.route('/')
 def index():
-	loc = {'lat':0.0,'lng':0.0}
-	global dist
-	data = {
-		"places":a.return_place_dist(loc['lat'], loc['lng'], dist),
-		"closest":closest(a.return_dict(), [loc['lat'], loc['lng']]),
-	}
-	data['dist'] = distance(data['closest'][1], data['closest'][2], loc['lat'], loc['lng'])
-	return render_template('index.html', **data)
+	return redirect('/home')
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/home', methods=["GET", 'POST'])
 def home():
 	if request.method == "POST":
-		loc = request.get_json()
-		print(loc)
-		return redirect(url_for('home'))
+		global loc
+		loc = request.form.getlist('loc[]')
+		return redirect('/app')
 	return render_template('home.html')
 
-@app.route('/get_loc', methods=['POST','GET'])
-def get_loc():
-	if request.method == 'POST':
-		search = request.get_json()
-		global loc
-		loc = search
-		return redirect('/')
-	return redirect('/')
+@app.route('/app')
+def loc_app():
+	global loc
+	data = {
+		"location":loc,
+		"area":closest(a.return_dict(), loc),
+		"all":a.return_dict()
+	}
+	data['dist'] = distance(data['area'][1],data['area'][2], loc[0], loc[1])
+	data['places'] = a.return_place_dist(loc[0], loc[1], data['dist'])
 
-@app.route('/get_dist', methods=["GET"])
-def get_dist():
-	global dist
-	dist = request.args.get('dist')
-	return redirect('/')
+	return render_template('index.html', **data)
 
 
 app.run(debug=True)

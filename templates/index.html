@@ -62,6 +62,9 @@
   src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
   crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+	<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     </head>
 
 <body class="page-template-default page page-id-1355 page-child parent-pageid-46 wp-embed-responsive desktop desktop-menu mobile-menu-push-to-left page-has-animation header-sticky-both wide page-has-no-sidebar wpb-js-composer js-comp-ver-6.0.5 vc_responsive"  data-site-width="1200px" data-content-width="1200" data-font="CerebriSans Helvetica, Arial, sans-serif" data-header-sticky-height="80">
@@ -120,6 +123,10 @@
     100% {transform: opacity: 0.0;}
 }
 
+.leaflet-control-container .leaflet-routing-container-hide {
+    display: none;
+}
+
 </style>
 
 <div id="page" class="site">
@@ -133,10 +140,15 @@
 								<h1 class="heading" style="margin-bottom: 5vw">
 									Infected places to avoid in Ghana
 
-									<h3 style="color: red">Closest lockdown zone: {{ closest[0] }}<br>About {{ dist|round }}km away</h3>
-									
+
+									<h3 style="color: red">Closest lockdown zone: {{ area[0] }}<br>About {{ dist|round }}km away<br>
+										<!-- <h5>Areas</h5>
+										<ul id='areas'>
+											
+										</ul> -->
+									</h3>
 									<div class="slidecontainer">
-									  <input type="range" min="1" max="1000" value="10" class="slider" id="myRange">
+									  <input type="range" min="1" max="300" value="10" class="slider" id="myRange">
 									</div>
 								</h1>
 								<h5 id="demo"></h5>
@@ -145,89 +157,24 @@
 				 						<div id="map"></div>
 
 				 						<script type="text/javascript">
-				 							var mymap = L.map('map');
-											mymap.locate({setView: true, maxZoom: 5});
+				 							alert("You are within {{ dist|round }} km of a lockdown zone")
 
-											L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-											    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-											    maxZoom: 18,
-											    id: 'mapbox/streets-v11',
-											    tileSize: 512,
-											    zoomOffset: -1,
-											    accessToken: 'pk.eyJ1IjoiamFrYW5nYWg4OSIsImEiOiJjazRmdGhyaHcwOXBlM2xwN28yMTJ4M2Q5In0.DszaGplQv510lUFtd1Tetg'
-											}).addTo(mymap);
-
-											var greenIcon = L.icon({
-											    iconUrl: '../static/bio.png',
-
-											    iconSize:     [50, 50], // size of the icon
-											    iconAnchor:   [25, 50], // point of the icon which will correspond to marker's location
-											    shadowAnchor: [4, 62],  // the same for the shadow
-											    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-											});
-
-											var user_circle;
-											function onLocationFound(e) {
-											    var radius = e.accuracy;
-
-											    L.marker(e.latlng, {icon: greenIcon}).addTo(mymap);
-
-											    user_circle = L.circle(e.latlng, {
-												    color: 'red',
-												    fillColor: '#f03',
-												    fillOpacity: 0.3,
-												    radius: 500,
-												    className: 'pulse'
-												}).addTo(mymap);
-
-												jQuery.ajax({
-											        type: "get",
-											        url: "/get_loc",
-											        data: JSON.stringify(e.latlng),
-											        contentType: "application/json; charset=utf-8",
-											        dataType: "json",
-											        success: function (data) {
-											            location.reload(true);
-											        }
-											    });
-											 jQuery.ajax({
-											        type: "get",
-											        url: "/",
-											        data: {loc:e.latlng},
-											        contentType: "application/json; charset=utf-8",
-											        dataType: "json",
-											        success: function (data) {
-											            location.reload(true);
-											        }
-											    });
-											}
-
-											function onLocationError(e) {
-											    alert(e.message);
-											}
-
-											mymap.on('locationerror', onLocationError);
-
-											mymap.on('locationfound', onLocationFound);
-
-
+											// jQuery.ajax({
+											//         type: "get",
+											//         url: "/get_loc",
+											//         data: JSON.stringify(e.latlng),
+											//         contentType: "application/json; charset=utf-8",
+											//         dataType: "json",
+											//         success: function (data) {
+											//             location.reload(true);
+											//         }
+											//     });
 
 
 											window.setInterval(function(){
 											  /// call your function here
 											  $(".info").html("YES")
 											}, 1000);
-
-											
-
-											{% for i in places %}
-												
-												var marker = L.marker([{{ i[1] }}, {{ i[2] }}], {icon: greenIcon}).addTo(mymap)
-												var lats = marker.getLatLng()['lat']
-												var lons = marker.getLatLng()['lng']
-												marker.bindPopup(lats+" "+lons).openPopup();
-												// marker.bindPopup(marker.getLatLng()['lat'].toString()+" "+marker.getLatLng()['lon'].toString()).openPopup();
-											{% endfor %}
 
 											jQuery( document ).ready( function( $ ) {
 												'use strict';
@@ -241,22 +188,146 @@
 											var output = document.getElementById("demo");
 											output.innerHTML = "Radius around you: " + slider.value + "km"; // Display the default slider value
 
-
-											slider.oninput = function() {
-											 output.innerHTML = "Radius around you: " + this.value + "km";
-											 jQuery.ajax({
-										        type: "get",
-										        url: "/get_dist",
-										        data: {dist:this.value},
-										        contentType: "application/json; charset=utf-8",
-										        dataType: "json",
-										        success: function (data) {
-										            location.reload(true);
-										        }
-										    });
-											user_circle.options.radius = this.value;
-											
+											function distance(lat1, lon1, lat2, lon2, unit) {
+												if ((lat1 == lat2) && (lon1 == lon2)) {
+													return 0;
+												}
+												else {
+													var radlat1 = Math.PI * lat1/180;
+													var radlat2 = Math.PI * lat2/180;
+													var theta = lon1-lon2;
+													var radtheta = Math.PI * theta/180;
+													var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+													if (dist > 1) {
+														dist = 1;
+													}
+													dist = Math.acos(dist);
+													dist = dist * 180/Math.PI;
+													dist = dist * 60 * 1.1515;
+													if (unit=="K") { dist = dist * 1.609344 }
+													if (unit=="N") { dist = dist * 0.8684 }
+													return dist;
+												}
 											}
+											
+
+											
+
+											if (navigator.geolocation) {
+											    navigator.geolocation.getCurrentPosition(drawPosition);
+											  } else {
+											    alert("Geolocation is not supported by this browser.");
+											  }
+
+											  function drawPosition(position){
+											  	var mymap = L.map('map').setView([position.coords.latitude, position.coords.longitude], 13);
+
+												L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={token}', {
+													maxZoom: 100,
+													attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+														'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+														'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+													id: 'mapbox/streets-v11',
+													token: 'pk.eyJ1IjoiamFrYW5nYWg4OSIsImEiOiJjazRmdGhyaHcwOXBlM2xwN28yMTJ4M2Q5In0.DszaGplQv510lUFtd1Tetg'
+												}).addTo(mymap);
+
+												
+
+												var greenIcon = L.icon({
+												    iconUrl: '../static/bio.png',
+
+												    iconSize:     [50,50], // size of the icon
+												    iconAnchor:   [25, 50], // point of the icon which will correspond to marker's location
+												    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+												});
+
+												L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap);
+
+												{% for i in places %}
+													L.marker([{{ i[1] }}, {{ i[2] }}], {icon:greenIcon}).addTo(mymap);
+													L.circle([{{ i[1] }}, {{ i[2] }}], {
+													    color: 'red',
+													    fillColor: '#f03',
+													    fillOpacity: 0.2,
+													    radius: 5000,
+													    className: 'pulse'
+													}).addTo(mymap);
+
+													var control = L.Routing.control({
+													    waypoints: [
+													        L.latLng([position.coords.latitude, position.coords.longitude]),
+													        L.latLng([{{ i[1] }}, {{ i[2] }}]),
+													    ],
+													    router: L.Routing.mapbox('pk.eyJ1IjoiamFrYW5nYWg4OSIsImEiOiJjazRmdGhyaHcwOXBlM2xwN28yMTJ4M2Q5In0.DszaGplQv510lUFtd1Tetg'),
+													    routeWhileDragging: false,
+													    createMarker: function() { return null; },
+													    lineOptions: {
+										                  styles: [{color: 'red', opacity: 1, weight: 5}]
+										               }
+													}).addTo(mymap);
+
+													control.hide();
+
+												{% endfor %}
+
+
+												slider.oninput = function() {
+												 output.innerHTML = "Radius around you: " + this.value + "km";
+												 
+													{% for i in all %}
+														var a = distance({{i[1]}}, {{i[2]}}, position.coords.latitude, position.coords.longitude, "K");
+														if (a <= this.value){
+															L.marker([{{ i[1] }}, {{ i[2] }}], {icon:greenIcon}).addTo(mymap);
+															L.circle([{{ i[1] }}, {{ i[2] }}], {
+															    color: 'red',
+															    fillColor: '#f03',
+															    fillOpacity: 0.2,
+															    radius: 5000,
+															    className: 'pulse'
+															}).addTo(mymap);
+															var control = L.Routing.control({
+															    waypoints: [
+															        L.latLng([position.coords.latitude, position.coords.longitude]),
+															        L.latLng([{{ i[1] }}, {{ i[2] }}]),
+															    ],
+															    router: L.Routing.mapbox('pk.eyJ1IjoiamFrYW5nYWg4OSIsImEiOiJjazRmdGhyaHcwOXBlM2xwN28yMTJ4M2Q5In0.DszaGplQv510lUFtd1Tetg'),
+															    routeWhileDragging: false,
+															    createMarker: function() { return null; },
+															    lineOptions: {
+												                  styles: [{color: 'red', opacity: 1, weight: 5}]
+												               }
+															}).addTo(mymap);
+
+															control.hide();
+														}
+													{% endfor %}
+												
+												}
+
+												
+											  }
+
+											  
+
+
+											// Define source and target locations which are passed into the Targomo route service.
+
+											function onError(err) {
+											  alert(err);
+											}
+
+											var opts = {
+											  enableHighAccuracy: true,
+											  maximumAge        : 1000,
+											  timeout           : 1000
+											}
+
+
+
+											navigator.geolocation.getCurrentPosition(addToMap, onError, opts);
+
+											 
+
 
 				 						</script>
 				 					</div>
@@ -279,7 +350,7 @@
 		</div>
 
 		<div class="popup-content">
-							<h3 class="popup-heading">Realtime nCOVID-19 tracking dashboard</h3>
+							<h3 class="popup-heading">Lockdown Zones</h3>
 							<h6 class="popup-description">Developed by Joshua Akangah</h6>
 					
 							<div class="popup-image">

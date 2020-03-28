@@ -51,6 +51,8 @@
   src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
   crossorigin="anonymous"></script>
+  <script src='../static/wp-content/themes/mitech/assets/libs/jquery.countdown/js/jquery.countdown.min.js'></script>
+<script src='../static/wp-content/themes/mitech/assets/js/countdown.js'></script>
     </head>
 
 <body class="page-template-default page page-id-1355 page-child parent-pageid-46 wp-embed-responsive desktop desktop-menu mobile-menu-push-to-left page-has-animation header-sticky-both wide page-has-no-sidebar wpb-js-composer js-comp-ver-6.0.5 vc_responsive"  data-site-width="1200px" data-content-width="1200" data-font="CerebriSans Helvetica, Arial, sans-serif" data-header-sticky-height="80">
@@ -120,9 +122,15 @@
 						<div class="col-md-12">
 							<div class="page-title-bar-heading">
 								<h1 class="heading" style="margin-bottom: 5vw">
+									<form method="post" id="target" action="/home">
+										<button type="submit" name="" >Start</button>
+									</form>
 								</h1>
-								<h5 id="demo"></h5>
+								
 								<center>
+									<h1 id="demo">Countdown to lockdown</h5>
+									<div data-type="countdown" data-id="1872278" class="tickcounter" style="width: 100%; position: relative; padding-bottom: 25%"><a href="//www.tickcounter.com/countdown/1872278/my-countdown" title="Countdown to lockdown">Countdown to lockdown</a><a href="//www.tickcounter.com/" title="Countdown to lockdown">Countdown to lockdown</a></div><script>(function(d, s, id) { var js, pjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//www.tickcounter.com/static/js/loader.js"; pjs.parentNode.insertBefore(js, pjs); }(document, "script", "tickcounter-sdk"));</script>
+									
 			 					</center>
 							</div>
 						</div>
@@ -132,88 +140,19 @@
 		</div>
 	</div>
 </div><!-- /.site -->
-		<script>
-
-		</script>
-		<div id="newsletter-popup" class="newsletter-popup">
-		<div class="inner">
-		<div id="newsletter-popup-close" class="newsletter-popup-close">
-			<span class="fal fa-times"></span>
-		</div>
-
-		<div class="popup-content">
-							<h3 class="popup-heading">Realtime nCOVID-19 tracking dashboard</h3>
-							<h6 class="popup-description">Developed by Joshua Akangah</h6>
-					
-							<div class="popup-image">
-					<img src='{{ url_for("static", filename="wp-content/themes/mitech/assets/images/newsletter-popup-image.png") }}'
-					     alt="Newsletter Image">
-				</div>
-			
-			<div class="popup-form">
-				<script>
-					(function() {
-					window.mc4wp = window.mc4wp || {
-						listeners: [],
-						forms: {
-							on: function(evt, cb) {
-								window.mc4wp.listeners.push(
-									{
-										event   : evt,
-										callback: cb
-									}
-								);
-							}
-						}
-					}
-				})();
-
-				function getLocation() {
-				  if (navigator.geolocation) {
-				    navigator.geolocation.getCurrentPosition(showPosition, showError);
-				  } else { 
-				    alert("Geolocation is not supported by this browser.");
-				  }
+<script type="text/javascript">
+	function showPosition(position) {
+					$.ajax({
+			          	data : {'loc': [position.coords.latitude, position.coords.longitude]},
+						type : 'POST',
+						url : '/home'
+					});
 				}
 
-				function showPosition(position) {
-				  jQuery.ajax({
-			        type: "POST",
-			        url: "/",
-			        data: {loc:[position.coords.latitude, position.coords.longitude]},
-			        contentType: "application/json; charset=utf-8",
-			        dataType: "json",
-			        success: function (data) {
-			            //location.reload(true);
-			        }
-			    });
-				}
-
-				function showError(error) {
-				  switch(error.code) {
-				    case error.PERMISSION_DENIED:
-				      alert("User denied the request for Geolocation.")
-				      break;
-				    case error.POSITION_UNAVAILABLE:
-				      alert("Location information is unavailable.")
-				      break;
-				    case error.TIMEOUT:
-				      alert("The request to get user location timed out.")
-				      break;
-				    case error.UNKNOWN_ERROR:
-				      alert("An unknown error occurred.")
-				      break;
-				  }
-				}
-
-				getLocation();
-				
-
-				</script>
-	</div>
-	</div>
-	</div>
-</div>
+				$( "#target" ).submit(function( event ) {
+					 navigator.geolocation.getCurrentPosition(showPosition);
+				});
+</script>
 							<a class="page-scroll-up" id="page-scroll-up">
 					<i class="arrow-top fal fa-long-arrow-up"></i>
 					<i class="arrow-bottom fal fa-long-arrow-up"></i>

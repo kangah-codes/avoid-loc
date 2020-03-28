@@ -86,7 +86,7 @@ class Zone():
 				self.connection.close()
 
 
-a = Zone()
+ #a = Zone()
 
 #print(a.return_dict())
 #print(a.return_place_dist(5.621913, -0.238955))
