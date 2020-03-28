@@ -3,6 +3,7 @@ from flask import Flask, render_template, url_for, jsonify, request, redirect, s
 from math import cos, asin, sqrt
 import json
 from ip2geotools.databases.noncommercial import DbIpCity
+import requests
 
 dist = 0
 a = Zone()
@@ -55,10 +56,12 @@ def loc_app():
 		return render_template('index.html', **data)
 	except:
 		ip = request.remote_addr
-		response = response = DbIpCity.get(ip, api_key='free')
+		geo_request_url = 'https://get.geojs.io/v1/ip/geo/' + ip + '.json'
+		geo_request = requests.get(geo_request_url)
+		geo_data = geo_request.json()
 
 		data = {
-			"location":[response.latitude, response.longitude],
+			"location":[geo_data['latitude'], geo_data['longitude']],
 			"area":closest(a.return_dict(), loc),
 			"all":a.return_dict()
 		}
