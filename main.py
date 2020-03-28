@@ -23,7 +23,8 @@ def closest(data, v):
 
 app = Flask(__name__)
 app.secret_key = "LMAO"
-loc = session['loc'] = [0.0,0.0]
+loc =  [0.0,0.0]
+lic = None
 
 @app.route('/')
 def index():
@@ -34,14 +35,16 @@ def home():
 	if request.method == "POST":
 		global loc
 		loc = request.form.getlist('loc[]')
+		lic = session['loc'] = loc
 		return redirect('/app')
 	return render_template('home.html')
 
 @app.route('/app')
 def loc_app():
 	global loc
+	global lic
 	data = {
-		"location":loc,
+		"location":lic,
 		"area":closest(a.return_dict(), loc),
 		"all":a.return_dict()
 	}
