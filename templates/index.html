@@ -244,9 +244,10 @@
 												L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap);
 
 												{% for i in places %}
+													
 													L.marker([{{ i[1] }}, {{ i[2] }}], {icon:greenIcon}).addTo(mymap);
 													L.circle([{{ i[1] }}, {{ i[2] }}], {
-													    color: 'red',
+													    color: '#f03',
 													    fillColor: '#f03',
 													    fillOpacity: 0.2,
 													    radius: 5000,
@@ -274,13 +275,13 @@
 
 												slider.oninput = function() {
 												 output.innerHTML = "Radius around you: " + this.value + "km";
-												 
 													{% for i in all %}
+
 														var a = distance({{i[1]}}, {{i[2]}}, position.coords.latitude, position.coords.longitude, "K");
 														if (a <= this.value){
 															L.marker([{{ i[1] }}, {{ i[2] }}], {icon:greenIcon}).addTo(mymap);
 															L.circle([{{ i[1] }}, {{ i[2] }}], {
-															    color: 'red',
+															    color: '#f03',
 															    fillColor: '#f03',
 															    fillOpacity: 0.2,
 															    radius: 5000,
@@ -293,6 +294,7 @@
 															    ],
 															    router: L.Routing.mapbox('pk.eyJ1IjoiamFrYW5nYWg4OSIsImEiOiJjazRmdGhyaHcwOXBlM2xwN28yMTJ4M2Q5In0.DszaGplQv510lUFtd1Tetg'),
 															    routeWhileDragging: false,
+															    fitSelectedRoutes: false,
 															    createMarker: function() { return null; },
 															    lineOptions: {
 												                  styles: [{color: 'red', opacity: 1, weight: 5}]
@@ -302,6 +304,10 @@
 															control.hide();
 														}
 													{% endfor %}
+
+													$("#myRange").remove();
+
+
 												
 												}
 
