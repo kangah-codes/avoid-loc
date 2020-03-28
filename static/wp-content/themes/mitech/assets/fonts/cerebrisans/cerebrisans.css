@@ -1,0 +1,89 @@
+@charset "UTF-8";
+
+@font-face {
+	font-family: 'CerebriSans';
+	src: url('CerebriSans-Regular.eot');
+	src: url('CerebriSans-Regular.eot#iefix') format('embedded-opentype'),
+	url('CerebriSans-Regular.ttf') format('truetype'),
+	url('CerebriSans-Regular.woff') format('woff'),
+	url('CerebriSans-Regular.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'CerebriSans';
+	src: url('CerebriSans-Italic.eot');
+	src: url('CerebriSans-Italic.eot#iefix') format('embedded-opentype'),
+	url('CerebriSans-Italic.ttf') format('truetype'),
+	url('CerebriSans-Italic.woff') format('woff'),
+	url('CerebriSans-Italic.svg') format('svg');
+	font-weight: normal;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'CerebriSans';
+	src: url('CerebriSans-Light.eot');
+	src: url('CerebriSans-Light.eot#iefix') format('embedded-opentype'),
+	url('CerebriSans-Light.ttf') format('truetype'),
+	url('CerebriSans-Light.woff') format('woff'),
+	url('CerebriSans-Light.svg') format('svg');
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'CerebriSans';
+	src: url('CerebriSans-Medium.eot');
+	src: url('CerebriSans-Medium.eot#iefix') format('embedded-opentype'),
+	url('CerebriSans-Medium.ttf') format('truetype'),
+	url('CerebriSans-Medium.woff') format('woff'),
+	url('CerebriSans-Medium.svg') format('svg');
+	font-weight: 500;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'CerebriSans';
+	src: url('CerebriSans-SemiBold.eot');
+	src: url('CerebriSans-SemiBold.eot#iefix') format('embedded-opentype'),
+	url('CerebriSans-SemiBold.ttf') format('truetype'),
+	url('CerebriSans-SemiBold.woff') format('woff'),
+	url('CerebriSans-SemiBold.svg') format('svg');
+	font-weight: 600;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'CerebriSans';
+	src: url('CerebriSans-Bold.eot');
+	src: url('CerebriSans-Bold.eot#iefix') format('embedded-opentype'),
+	url('CerebriSans-Bold.ttf') format('truetype'),
+	url('CerebriSans-Bold.woff') format('woff'),
+	url('CerebriSans-Bold.svg') format('svg');
+	font-weight: 700;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'CerebriSans';
+	src: url('CerebriSans-ExtraBold.eot');
+	src: url('CerebriSans-ExtraBold.eot#iefix') format('embedded-opentype'),
+	url('CerebriSans-ExtraBold.ttf') format('truetype'),
+	url('CerebriSans-ExtraBold.woff') format('woff'),
+	url('CerebriSans-ExtraBold.svg') format('svg');
+	font-weight: 800;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'CerebriSans';
+	src: url('CerebriSans-Heavy.eot');
+	src: url('CerebriSans-Heavy.eot#iefix') format('embedded-opentype'),
+	url('CerebriSans-Heavy.ttf') format('truetype'),
+	url('CerebriSans-Heavy.woff') format('woff'),
+	url('CerebriSans-Heavy.svg') format('svg');
+	font-weight: 900;
+	font-style: normal;
+}

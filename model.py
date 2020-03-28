@@ -64,29 +64,32 @@ class Zone():
 			if self.connection:
 				self.connection.close()
 
-	def return_place_dist(self, lat, lon):
+	def return_place_dist(self, lat, lon, radius):
 		try:
 			self.connection = sqlite3.connect(self.name)
 			self.cursor = self.connection.cursor()
 			self.connection.create_function("distance", 4, distance)
 			self.cursor.execute(f"""
-				SELECT * FROM AREA WHERE distance(LAT, LON, ?, ?) >= 0;
+				SELECT * FROM AREA WHERE distance(LAT, LON, ?, ?) <= {radius};
 			""", (float(lat), float(lon),))
 
 		except sqlite3.OperationalError as e:
+			print(e)
 			return e
 
 		else:
-			return min(self.cursor.fetchall(), key=lambda p:  distance(lat, lon,p[1],p[2]))
+			return self.cursor.fetchall()
+			#return min(self.cursor.fetchall(), key=lambda p:  distance(lat, lon,p[1],p[2]))
 
 		finally:
 			if self.connection:
 				self.connection.close()
 
+
 a = Zone()
 
 #print(a.return_dict())
-print(a.return_place_dist(5.621913, -0.238955))
+#print(a.return_place_dist(5.621913, -0.238955))
 # reader = csv.reader(open("places.csv"), delimiter=";")
 
 # for row in reader:
