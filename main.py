@@ -2,6 +2,7 @@ from model import Zone
 from flask import Flask, render_template, url_for, jsonify, request, redirect, session
 from math import cos, asin, sqrt
 import json
+from ip2geotools.databases.noncommercial import DbIpCity
 
 dist = 0
 a = Zone()
@@ -14,7 +15,6 @@ def distance(lat1, lon1, lat2, lon2):
 	return 12742 * asin(sqrt(a))
 
 def closest(data, v):
-	print(v)
 	return min(data, key=lambda p: distance(v[0],v[1],p[1],p[2]))
 
 # tempDataList = a.return_dict()
@@ -41,17 +41,29 @@ def home():
 
 @app.route('/app')
 def loc_app():
-	global loc
-	global lic
-	data = {
-		"location":lic,
-		"area":closest(a.return_dict(), loc),
-		"all":a.return_dict()
-	}
-	data['dist'] = distance(data['area'][1],data['area'][2], loc[0], loc[1])
-	data['places'] = a.return_place_dist(loc[0], loc[1], data['dist'])
+	try:
+		global loc
+		global lic
+		data = {
+			"location":lic,
+			"area":closest(a.return_dict(), loc),
+			"all":a.return_dict()
+		}
+		data['dist'] = distance(data['area'][1],data['area'][2], loc[0], loc[1])
+		data['places'] = a.return_place_dist(loc[0], loc[1], data['dist'])
 
-	return render_template('index.html', **data)
+		return render_template('index.html', **data)
+	except:
+		ip = request.remote_addr
+		response = response = DbIpCity.get(ip, api_key='free')
+
+		data = {
+			"location":[response.latitude, response.longitude],
+			"area":closest(a.return_dict(), loc),
+			"all":a.return_dict()
+		}
+		data['dist'] = distance(data['area'][1],data['area'][2], loc[0], loc[1])
+		data['places'] = a.return_place_dist(loc[0], loc[1], data['dist'])
 
 if __name__ == "__main__":
 	app.run(debug=True)
