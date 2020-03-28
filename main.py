@@ -23,7 +23,7 @@ def closest(data, v):
 
 app = Flask(__name__)
 
-loc = 0
+loc = [0.0,0.0]
 
 @app.route('/')
 def index():
