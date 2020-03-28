@@ -1,5 +1,5 @@
 from model import Zone
-from flask import Flask, render_template, url_for, jsonify, request, redirect
+from flask import Flask, render_template, url_for, jsonify, request, redirect, session
 from math import cos, asin, sqrt
 import json
 
@@ -22,8 +22,8 @@ def closest(data, v):
 # print(closest(tempDataList, v))
 
 app = Flask(__name__)
-
-loc = [0.0,0.0]
+app.secret_key = "LMAO"
+loc = session['loc'] = [0.0,0.0]
 
 @app.route('/')
 def index():
