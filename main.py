@@ -14,8 +14,7 @@ def distance(lat1, lon1, lat2, lon2):
 	return 12742 * asin(sqrt(a))
 
 def closest(data, v):
-	[print(p[1], p[2]) for p in data]
-	print(v[0], v[1])
+	print(v)
 	return min([distance(v[0],v[1],p[1],p[2])] for p in data)
 
 # tempDataList = a.return_dict()
